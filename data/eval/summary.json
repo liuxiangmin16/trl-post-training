@@ -1,0 +1,29 @@
+[
+  {
+    "name": "base",
+    "n": 20,
+    "correct": 10,
+    "accuracy": 0.5,
+    "answer_tag_rate": 0.1,
+    "boxed_rate": 0.5,
+    "mean_gen_tokens": 1445.9
+  },
+  {
+    "name": "sft",
+    "n": 20,
+    "correct": 5,
+    "accuracy": 0.25,
+    "answer_tag_rate": 0.85,
+    "boxed_rate": 0.0,
+    "mean_gen_tokens": 388.95
+  },
+  {
+    "name": "grpo",
+    "n": 20,
+    "correct": 5,
+    "accuracy": 0.25,
+    "answer_tag_rate": 0.9,
+    "boxed_rate": 0.0,
+    "mean_gen_tokens": 297.9
+  }
+]

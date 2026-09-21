@@ -1,0 +1,150 @@
+CUDA_VISIBLE_DEVICES=2 python scripts/train_sft.py --config configs/sft_qwen3_0.6b_lora.yaml
+Loading local processed SFT dataset...
+Generating train split: 500 examples [00:00, 136382.39 examples/s]
+Dataset({
+    features: ['messages'],
+    num_rows: 500
+})
+{'messages': [{'role': 'user', 'content': 'Solve the following math problem. Put the final answer inside <answer></answer>.\n\nNatalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?'}, {'role': 'assistant', 'content': '<think>\nNatalia sold 48/2 = 24 clips in May.\nNatalia sold 48+24 = 72 clips altogether in April and May.\n</think>\n<answer>72</answer>'}]}
+Before trainer: GPU memory | allocated=0.00GB | reserved=0.00GB | max_allocated=0.00GB
+Tokenizing train dataset: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 500/500 [00:00<00:00, 1511.47 examples/s]
+Building labels for train dataset: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 500/500 [00:00<00:00, 4250.99 examples/s]
+Truncating train dataset: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 500/500 [00:00<00:00, 5369.69 examples/s]
+Dropping fully masked examples from train dataset: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 500/500 [00:00<00:00, 6900.82 examples/s]
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+After trainer: GPU memory | allocated=2.26GB | reserved=2.91GB | max_allocated=2.80GB
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None}.
+{'loss': 0.8217, 'grad_norm': 1.1363167762756348, 'learning_rate': 0.000192, 'entropy': 0.4873345125466585, 'num_tokens': 7838.0, 'mean_token_accuracy': 0.8101664662361145, 'epoch': 0.08}
+{'loss': 0.6571, 'grad_norm': 1.1113896369934082, 'learning_rate': 0.000182, 'entropy': 0.662955067306757, 'num_tokens': 15220.0, 'mean_token_accuracy': 0.8359976187348366, 'epoch': 0.16}
+{'loss': 0.6244, 'grad_norm': 1.026004672050476, 'learning_rate': 0.000172, 'entropy': 0.6019631665199995, 'num_tokens': 22476.0, 'mean_token_accuracy': 0.8264694377779961, 'epoch': 0.24}
+{'loss': 0.6165, 'grad_norm': 0.9228983521461487, 'learning_rate': 0.000162, 'entropy': 0.5048807762563229, 'num_tokens': 29209.0, 'mean_token_accuracy': 0.8443420857191086, 'epoch': 0.32}
+{'loss': 0.6994, 'grad_norm': 0.8946062922477722, 'learning_rate': 0.000152, 'entropy': 0.5798264153301715, 'num_tokens': 37363.0, 'mean_token_accuracy': 0.8159000426530838, 'epoch': 0.4}
+{'loss': 0.6762, 'grad_norm': 1.2324066162109375, 'learning_rate': 0.000142, 'entropy': 0.637406786158681, 'num_tokens': 44581.0, 'mean_token_accuracy': 0.8271142795681954, 'epoch': 0.48}
+{'loss': 0.6492, 'grad_norm': 1.602157711982727, 'learning_rate': 0.000132, 'entropy': 0.6959412015974522, 'num_tokens': 52079.0, 'mean_token_accuracy': 0.8186744898557663, 'epoch': 0.56}
+{'loss': 0.6514, 'grad_norm': 0.8016024231910706, 'learning_rate': 0.000122, 'entropy': 0.678616639971733, 'num_tokens': 59972.0, 'mean_token_accuracy': 0.8306098684668541, 'epoch': 0.64}
+{'loss': 0.6327, 'grad_norm': 0.9896223545074463, 'learning_rate': 0.00011200000000000001, 'entropy': 0.6268252775073051, 'num_tokens': 67223.0, 'mean_token_accuracy': 0.8321740537881851, 'epoch': 0.72}
+{'loss': 0.6317, 'grad_norm': 0.8795358538627625, 'learning_rate': 0.00010200000000000001, 'entropy': 0.5878400638699531, 'num_tokens': 75505.0, 'mean_token_accuracy': 0.8310377433896065, 'epoch': 0.8}
+{'loss': 0.6146, 'grad_norm': 1.0857986211776733, 'learning_rate': 9.200000000000001e-05, 'entropy': 0.5670564979314804, 'num_tokens': 83021.0, 'mean_token_accuracy': 0.8359276220202446, 'epoch': 0.88}
+{'loss': 0.6164, 'grad_norm': 0.8647575378417969, 'learning_rate': 8.2e-05, 'entropy': 0.5996456243097782, 'num_tokens': 90314.0, 'mean_token_accuracy': 0.8298589721322059, 'epoch': 0.96}
+{'loss': 0.6325, 'grad_norm': 0.7072689533233643, 'learning_rate': 7.2e-05, 'entropy': 0.610343348648813, 'num_tokens': 97582.0, 'mean_token_accuracy': 0.8346765852636762, 'epoch': 1.03}
+{'loss': 0.4799, 'grad_norm': 0.6660696268081665, 'learning_rate': 6.2e-05, 'entropy': 0.5268917798995971, 'num_tokens': 105437.0, 'mean_token_accuracy': 0.8735898122191429, 'epoch': 1.11}
+{'loss': 0.5592, 'grad_norm': 0.7899602055549622, 'learning_rate': 5.2000000000000004e-05, 'entropy': 0.5772230684757232, 'num_tokens': 112898.0, 'mean_token_accuracy': 0.8451307937502861, 'epoch': 1.19}
+{'loss': 0.5017, 'grad_norm': 0.7817120552062988, 'learning_rate': 4.2e-05, 'entropy': 0.5148053944110871, 'num_tokens': 120303.0, 'mean_token_accuracy': 0.8631294220685959, 'epoch': 1.27}
+{'loss': 0.5296, 'grad_norm': 0.764403223991394, 'learning_rate': 3.2000000000000005e-05, 'entropy': 0.5148272586986422, 'num_tokens': 127732.0, 'mean_token_accuracy': 0.8568401128053665, 'epoch': 1.35}
+{'loss': 0.5427, 'grad_norm': 0.8551049828529358, 'learning_rate': 2.2000000000000003e-05, 'entropy': 0.49723718836903574, 'num_tokens': 135702.0, 'mean_token_accuracy': 0.855842225253582, 'epoch': 1.43}
+{'loss': 0.4901, 'grad_norm': 0.8633452653884888, 'learning_rate': 1.2e-05, 'entropy': 0.48090663328766825, 'num_tokens': 143408.0, 'mean_token_accuracy': 0.8558128580451012, 'epoch': 1.51}
+{'loss': 0.4342, 'grad_norm': 0.7340410351753235, 'learning_rate': 2.0000000000000003e-06, 'entropy': 0.4531891196966171, 'num_tokens': 150586.0, 'mean_token_accuracy': 0.8774179056286812, 'epoch': 1.59}
+{'train_runtime': 249.6342, 'train_samples_per_second': 3.205, 'train_steps_per_second': 0.401, 'train_loss': 0.6030713939666748, 'epoch': 1.59}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 100/100 [04:09<00:00,  2.50s/it]
+After training: GPU memory | allocated=2.35GB | reserved=4.41GB | max_allocated=3.32GB
+Saved SFT LoRA adapter to /rainbow/liuxm/learn/train-lab/outputs/sft/qwen3-0.6b-lora-math-format
+
+#############################################***SFT前***########################################
+CUDA_VISIBLE_DEVICES=2 python scripts/infer.py \
+  --base_model /rainbow/liuxm/learn/qwen3-0.6B \
+  --prompt "Ryan has 40 balls. There are twice as many red balls as blue while the rest are green. If there are 11 blue balls, how many green balls are there?"
+`torch_dtype` is deprecated! Use `dtype` instead!
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+<think>
+Okay, let's see. Ryan has 40 balls total. The problem says there are twice as many red balls as blue, and the rest are green. Also, there are 11 blue balls. I need to find out how many green balls there are. Hmm, let me break this down step by step.
+
+First, let me note down the given information:
+
+- Total number of balls: 40
+- Number of blue balls: 11
+- Number of red balls is twice the number of blue balls.
+- The rest of the balls are green.
+
+So, since there are 11 blue balls, and red balls are twice as many as blue, I can figure out how many red balls there are. Let me write that down:
+
+Red balls = 2 * Blue balls
+
+Given that blue balls are 11, then red balls would be 2 * 11 = 22. Let me check that. Yes, 2 times 11 is 22. So that's 22 red balls.
+
+Now, the total number of balls is the sum of red, blue, and green. So, total balls = red + blue + green.
+
+We know the total is 40, red is 22, blue is 11. Therefore, green balls should be total minus red and blue. Let me calculate that:
+
+Green balls = Total - Red - Blue = 40 - 22 - 11
+
+Let me compute that. 40 minus 22 is 18, then minus 11 is 7. So green balls are 7?
+
+Wait, let me check again. 40 minus 22 is 18. Then 18 minus 11 is 7. Yeah, that seems right. So there are 7 green balls.
+
+But let me make sure I didn't make any mistakes in the steps. Let me verify:
+
+Total balls: 40.
+
+Blue: 11
+
+Red: 22
+
+Green: ?
+
+So 11 + 22 = 33. 40 - 33 = 7. Yep, that's correct. So green is 7.
+
+Is there another way to think about this? Maybe by considering the ratio? The problem says there are twice as many red as blue. So red:blue = 2:1. Since blue is 11, red is 22. Then green is the remaining 40 - 11 -22 = 7. Yep, same answer.
+
+I think that's solid. So the answer should be 7 green balls.
+
+**Final Answer**
+The number of green balls is \boxed{7}.
+</think>
+
+To determine how many green balls Ryan has, let's analyze the problem step by step.
+
+---
+
+### Step 1: Understand the relationships
+
+- Ryan has **40 balls** in total.
+- There are **twice as many red balls as blue**.
+- The **rest** of the balls are green.
+
+We are told that there are **11 blue balls**.
+
+---
+
+### Step 2: Calculate the number of red balls
+
+Since red balls are **twice as many as blue**, and blue balls are 11:
+
+$$
+\text{Red balls} = 2 \times 11 = 22
+$$
+
+---
+
+### Step 3: Find the number of green balls
+
+The total number of balls is the sum of red, blue, and green:
+
+$$
+\text{Green balls} = \text{Total balls} - \text{Red balls} - \text{Blue balls}
+$$
+
+$$
+\text{Green balls} = 40 - 22 - 11 = 7
+$$
+
+---
+
+### Final Answer
+
+$$
+\boxed{7}
+$$
+#############################################***SFT后***########################################
+CUDA_VISIBLE_DEVICES=2 python scripts/infer.py \
+>   --base_model /rainbow/liuxm/learn/qwen3-0.6B \
+>   --adapter outputs/sft/qwen3-0.6b-lora-math-format \
+>   --prompt "Ryan has 40 balls. There are twice as many red balls as blue while the rest are green. If there are 11 blue balls, how many green balls are there?"
+`torch_dtype` is deprecated! Use `dtype` instead!
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+<think>
+There are 40/2 = 20 red balls.
+There are 20+11 = 31 blue and red balls.
+There are 40-31 = 9 green balls.
+</think>
+
+<answer>9</answer>

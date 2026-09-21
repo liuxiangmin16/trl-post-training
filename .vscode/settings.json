@@ -1,0 +1,4 @@
+{
+  "python.defaultInterpreterPath": "/Users/liuxm/miniforge3/envs/py311/bin/python",
+  "python.terminal.activateEnvironment": true
+}

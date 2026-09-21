@@ -1,0 +1,18 @@
+# SFT：教模型在 <think> 里推理、用 <answer></answer> 收口
+# 改数据后必须先重跑 python scripts/01_prepare_data.py 再训练
+# 训练后可作 GRPO 起点修复 reward=0（参考 reports/grpo_report.md 的 Fix options 1）
+model_name: /rainbow/liuxm/learn/qwen3-0.6B
+dataset_path: /rainbow/liuxm/learn/train-lab/data/processed/sft/math_format_500.jsonl
+output_dir: /rainbow/liuxm/learn/train-lab/outputs/sft/qwen3-0.6b-lora-math-format
+
+max_steps: 100
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+learning_rate: 0.0002
+max_length: 512
+logging_steps: 5
+save_steps: 50
+
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
