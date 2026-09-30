@@ -1,0 +1,24 @@
+[
+  {
+    "prompt": [
+      {
+        "role": "user",
+        "content": "Solve the following math problem. Put the final answer inside <answer></answer>.\n\nI1.1 If $a$ is a real number satisfying $\\log _{2}(x+3)-\\log _{2}(x+1)=1$, find the value of $a$."
+      }
+    ],
+    "answer": "1",
+    "raw_question": "I1.1 If $a$ is a real number satisfying $\\log _{2}(x+3)-\\log _{2}(x+1)=1$, find the value of $a$.",
+    "raw_answer": "1"
+  },
+  {
+    "prompt": [
+      {
+        "role": "user",
+        "content": "Solve the following math problem. Put the final answer inside <answer></answer>.\n\n3. There is a sequence of numbers which are $1, 5, 11, 19, 29$, $A, 55$, where $A=$ $\\qquad$ ."
+      }
+    ],
+    "answer": "41",
+    "raw_question": "3. There is a sequence of numbers which are $1, 5, 11, 19, 29$, $A, 55$, where $A=$ $\\qquad$ .",
+    "raw_answer": "41"
+  }
+]
