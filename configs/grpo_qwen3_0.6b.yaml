@@ -1,13 +1,6 @@
-# GRPO：SFT merged 起步 + GSM8K holdout（train[500:1000]）
-# 相对第一轮 100 step / G=4：拉满 1 epoch、组内 8 条，减少「全对/全错」零梯度
-#
-# python scripts/merge_lora.py \
-#   --base_model /rainbow/liuxm/learn/qwen3-0.6B \
-#   --lora_path outputs/sft/qwen3-0.6b-lora-math-format \
-#   --output_dir outputs/sft/qwen3-0.6b-merged-math-format
-model_name: /rainbow/liuxm/learn/train-lab/outputs/sft/qwen3-0.6b-merged-math-format
-dataset_path: /rainbow/liuxm/learn/train-lab/data/processed/grpo/gsm8k_500.jsonl
-output_dir: /rainbow/liuxm/learn/train-lab/outputs/grpo/qwen3-0.6b-gsm8k-from-sft
+model_name: /rainbow/liuxm/learn/train-lab/outputs/sft/qwen3-0.6b-merged-openr1-format
+dataset_path: /rainbow/liuxm/learn/train-lab/data/processed/grpo/openr1_math_500.jsonl
+output_dir: /rainbow/liuxm/learn/train-lab/outputs/grpo/qwen3-0.6b-openr1-from-sft
 
 # 每 step 的题数 = 卡数（G=8、accum=8 时）。2 卡: 每 step 2 题，500 step ≈ 2 epoch
 max_steps: 500
@@ -20,7 +13,7 @@ warmup_steps: 20
 logging_steps: 5
 save_steps: 100
 
-max_completion_length: 512
+max_completion_length: 4096
 num_generations: 8
 # 同一批生成复用 2 次更新，不额外采样
 num_iterations: 2

@@ -130,9 +130,8 @@ if __name__ == "__main__":
     # 1) merge SFT LoRA → outputs/sft/qwen3-0.6b-merged-math-format
     # 2) train GRPO:
     # 单卡:
-    # CUDA_VISIBLE_DEVICES=2 python scripts/train_grpo.py --config configs/grpo_qwen3_0.6b_gsm8k.yaml
+    # CUDA_VISIBLE_DEVICES=2 nohup python scripts/train_grpo.py --config configs/grpo_qwen3_0.6b.yaml >> log_grpo.log 2>&1 &
     #
     # A40 卡1+卡2（不要再加 --use_deepspeed/--deepspeed_config_file，json 由 GRPOConfig.deepspeed 注入）:
-    # CUDA_VISIBLE_DEVICES=1,2 accelerate launch \
-    #   --num_processes 2 --mixed_precision bf16 \
-    #   scripts/train_grpo.py --config configs/grpo_qwen3_0.6b_gsm8k.yaml
+    # CUDA_VISIBLE_DEVICES=1,2 accelerate launch --num_processes 2 --mixed_precision bf16 scripts/train_grpo.py --config configs/grpo_qwen3_0.6b.yaml
+    # CUDA_VISIBLE_DEVICES=1,2 nohup accelerate launch --num_processes 2 --mixed_precision bf16 scripts/train_grpo.py --config configs/grpo_qwen3_0.6b.yaml >> log_grpo.log 2>&1 &

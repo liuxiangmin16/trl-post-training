@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
 # python scripts/merge_lora.py \
 #   --base_model /rainbow/liuxm/learn/qwen3-0.6B \
-#   --lora_path outputs/sft/qwen3-0.6b-lora-math-format \
-#   --output_dir outputs/sft/qwen3-0.6b-merged-math-format
+#   --lora_path outputs/sft/qwen3-0.6b-lora-openr1-format \
+#   --output_dir outputs/sft/qwen3-0.6b-merged-openr1-format
 #
 # 再把 GRPO 的 model_name 改成 merged 目录后训练。
