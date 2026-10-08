@@ -10,14 +10,14 @@ GRPO → 提升模型解题能力。
 
 数据：GSM8K **test** 前 20 题（SFT 用 train[:500]，GRPO 用 train[500:1000]，与 test 无重叠）。
 
-三套权重同一条 prompt（要求 `<answer>`）、贪心解码、`max_new_tokens=2048`。预测优先取 `<answer>`，没有再取 `\boxed{}`。明细见 `data/eval/`。
+三套权重同一条 prompt（要求 `<answer>`）、贪心解码、`max_new_tokens=2048`。预测优先取 `<answer>`，没有再取 `\boxed{}`。回答完成率是生成 token 数小于上限、没有被截断的比例。明细见 `data/eval/gsm8k-finetuned-model/`。
 
 
-| 模型                     | 正确      | 准确率     | 使用 `<answer>` | 使用 `\boxed{}` | 平均生成 token |
-| ---------------------- | ------- | ------- | ------------- | ------------- | ---------- |
-| 原模型 Qwen3-0.6B         | 10 / 20 | **50%** | 10%           | 50%           | **1446**   |
-| SFT LoRA               | 5 / 20  | 25%     | 85%           | 0%            | 389        |
-| SFT merged + GRPO LoRA | 5 / 20  | 25%     | 90%           | 0%            | 298        |
+| 模型                     | 正确      | 准确率     | 使用 `<answer>` | 使用 `\boxed{}` | 平均生成 token | 回答完成率          |
+| ---------------------- | ------- | ------- | ------------- | ------------- | ---------- | -------------- |
+| 原模型 Qwen3-0.6B         | 10 / 20 | **50%** | 10%           | 50%           | **1446**   | 11 / 20（55%）   |
+| SFT LoRA               | 5 / 20  | 25%     | 85%           | 0%            | 389        | 17 / 20（85%）   |
+| SFT merged + GRPO LoRA | 5 / 20  | 25%     | 90%           | 0%            | 298        | 18 / 20（90%）   |
 
 
 样本量只有 20，数字会抖，但方向一致：
@@ -64,7 +64,7 @@ CUDA_VISIBLE_DEVICES=2 python scripts/eval_math.py \
   --sft_adapter outputs/sft/qwen3-0.6b-lora-math-format \
   --grpo_base outputs/sft/qwen3-0.6b-merged-math-format \
   --grpo_adapter outputs/grpo/qwen3-0.6b-gsm8k-from-sft \
-  --output_dir data/eval
+  --output_dir data/eval/gsm8k-finetuned-model
 ```
 
 单题对比用 `scripts/infer.py`。默认贪心解码；加 `--temperature 0.7` 才会换不同输出。
@@ -85,3 +85,50 @@ data/processed/   SFT / DPO / GRPO jsonl
 data/eval/        summary.json 与各模型 preds.jsonl
 ```
 
+## 优化方向 2 的结果
+
+用 OpenR1-Math 的长 CoT 做 SFT 和 GRPO做后训练。评测仍是 GSM8K test 前 20 题，同一条 prompt、贪心解码，`max_new_tokens`参数由默认的2048增加到4096。明细见 `data/eval/OpenR1-finetuned-model/`。
+
+结论：**长推理留下来了，准确率回到基座并多对 1 题；GRPO 没有再抬上去。不好的地方是回答用指定格式<answer>的比例大幅下降，指令遵循效果变差。**
+
+
+| 实验            | 模型      | 正确      | 准确率    | 使用 `<answer>` | 使用 `\boxed{}` | 平均生成 token | 回答完成率        |
+| ------------- | ------- | ------- | ------ | ------------- | ------------- | ---------- | ------------ |
+| GSM8K · 2048  | 原模型     | 10 / 20 | 50%    | 10%           | 50%           | 1446       | 11 / 20（55%） |
+| GSM8K · 2048  | SFT     | 5 / 20  | 25%    | 85%           | 0%            | 389        | 17 / 20（85%） |
+| GSM8K · 2048  | GRPO    | 5 / 20  | 25%    | 90%           | 0%            | 298        | 18 / 20（90%） |
+| OpenR1 · 4096 | 原模型     | 10 / 20 | 50%    | 10%           | 55%           | 2264       | 13 / 20（65%） |
+| OpenR1 · 4096 | SFT     | 11 / 20 | **55%** | 45%           | 30%           | **1838**   | 15 / 20（75%） |
+| OpenR1 · 4096 | GRPO    | 10 / 20 | 50%    | 45%           | 30%           | 1989       | 15 / 20（75%） |
+
+
+- OpenR1 SFT 正确 11 / 20，高于 GSM8K SFT 的 5 / 20，也高于同一次评测里的基座（10 / 20）。平均长度留在 1838 token，没有再掉到三四百。
+- 回答完成率：OpenR1 SFT、GRPO 都是 15 / 20（75%），基座是 13 / 20（65%）。GSM8K 短解完成率 85%–90%，是因为生成只有约 300 token，很少撞上 2048。顶满上限的题在这 20 题里全部算错；OpenR1 SFT、GRPO 各有 5 题、基座有 7 题没写完。
+- 格式没有短解那轮稳。`<answer>` 约占 45%，另有约 30% 的预测来自 `\boxed{}`。
+- GRPO 正确 10 / 20，与基座相同，比 SFT 少 1 题。完成率也停在 75%。
+
+
+```bash
+CUDA_VISIBLE_DEVICES=2 python scripts/eval_math.py \
+  --dataset data/raw/openai/gsm8k \
+  --split test \
+  --limit 20 \
+  --max_new_tokens 4096 \
+  --base_model /rainbow/liuxm/learn/qwen3-0.6B \
+  --sft_adapter outputs/sft/qwen3-0.6b-lora-openr1-format \
+  --grpo_base outputs/sft/qwen3-0.6b-merged-openr1-format \
+  --grpo_adapter outputs/grpo/qwen3-0.6b-openr1-from-sft \
+  --output_dir data/eval/OpenR1-finetuned-model
+```
+
+## 问题分析
+- 指令遵循效果变差，回答用指定格式<answer>的比例大幅下降
+sft训练时，max_length没有从512调整为4096，而标签在长文本末尾，训练时被截掉了，模型实际看到的收口是 \boxed{}。
+继续优化：
+1.修复sft训练参数，max_length调整为4096
+2.训练数据预处理时，思维链里的 \boxed{...} 拆成普通文本，最终答案只留在 `<answer>`
+
+- GRPO 正确率没涨
+GRPO 正确率没涨，从日志看，是因为大多数 step 没有可用梯度。logs/train-OpenR1/grpo.log 里，正确奖励全程大约 0.06–0.12，没有抬升。深层原因是OpenR1 的题对 0.6B 太难。一组里经常全错，正确奖励出不来。
+继续优化:
+1.GRPO 训练集改成 GSM8K

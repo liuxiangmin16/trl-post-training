@@ -6,8 +6,9 @@ assistant = <think>推理</think><answer>gold</answer>
 GRPO 用同一筛选池里 SFT 之后的题目，只保留题面和数字答案。
 
 先各取 500 条，方便和上一轮 GSM8K 短解实验对比。
-推理按字符数卡在可训练区间，避免 </think><answer> 在 max_length 里被截掉。
-当前 SFT max_length / GRPO max_completion_length 仍是 512，训这批数据前要调到至少 2048。
+推理按字符数卡在可训练区间。<think> 里的 \\boxed{} 会拆掉，
+最终答案只留在末尾的 <answer>，避免模型把收口学成 \\boxed{}。
+SFT max_length 需要盖住整段 assistant（这批大约 4000 字符），否则 </answer> 进不了 loss。
 """
 import json
 import os
@@ -40,6 +41,7 @@ MATH_PROMPT_TEMPLATE = (
 
 THINK_RE = re.compile(r"<think>\s*(.*?)\s*</think>", re.DOTALL)
 NUMERIC_RE = re.compile(r"-?\d+(?:\.\d+)?")
+BOXED_MARK = "\\boxed{"
 
 
 def save_json(path, obj):
@@ -99,12 +101,40 @@ def iter_openr1():
             yield example
 
 
+def unwrap_boxed(text):
+    """把 \\boxed{内容} 换成内容本身。思维链里不再出现 \\boxed 这个收口格式。"""
+    parts = []
+    cursor = 0
+    while True:
+        start = text.find(BOXED_MARK, cursor)
+        if start < 0:
+            parts.append(text[cursor:])
+            break
+        parts.append(text[cursor:start])
+        content_at = start + len(BOXED_MARK)
+        depth = 1
+        index = content_at
+        while index < len(text) and depth:
+            if text[index] == "{":
+                depth += 1
+            elif text[index] == "}":
+                depth -= 1
+            index += 1
+        if depth != 0:
+            parts.append(text[start:])
+            break
+        parts.append(text[content_at:index - 1])
+        cursor = index
+    return "".join(parts)
+
+
 def format_math_completion(solution, gold):
     """Qwen3 目标格式：推理进 <think>，可见回复只有 <answer>。
 
     Qwen3 chat template 在 assistant 没有 </think> 时会插入空的
     <think></think>，SFT 就会学会跳过推理、也不稳定输出 <answer>。
     """
+    solution = unwrap_boxed(solution)
     return f"<think>\n{solution}\n</think>\n<answer>{gold}</answer>"
 
 
@@ -178,12 +208,14 @@ def prepare_openr1(sft_items=SFT_MAX_ITEMS, grpo_items=GRPO_MAX_ITEMS):
 
     think_lens = [len(row["reasoning"]) for row in sft_rows_src]
     think_lens.sort()
+    boxed_left = sum("\\boxed" in row["messages"][1]["content"] for row in sft_rows)
     print(f"saved SFT ({len(sft_rows)} rows): {sft_out}")
     print(f"saved GRPO ({len(grpo_rows)} rows): {grpo_out}")
     print(
         "SFT think chars: "
         f"min={think_lens[0]} median={think_lens[len(think_lens) // 2]} max={think_lens[-1]}"
     )
+    print(f"SFT rows still containing \\\\boxed: {boxed_left}")
 
 
 if __name__ == "__main__":

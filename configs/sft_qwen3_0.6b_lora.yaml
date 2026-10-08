@@ -9,7 +9,8 @@ max_steps: 100
 per_device_train_batch_size: 1
 gradient_accumulation_steps: 8
 learning_rate: 0.0002
-max_length: 512
+# 要盖住整段 <think> 和末尾 <answer>。512 会把 </answer> 截掉，模型学不会 answer 标签。
+max_length: 4096
 logging_steps: 5
 save_steps: 50
 
