@@ -1,20 +1,20 @@
 model_name: /rainbow/liuxm/learn/train-lab/outputs/sft/qwen3-0.6b-merged-openr1-format
-dataset_path: /rainbow/liuxm/learn/train-lab/data/processed/grpo/openr1_math_500.jsonl
-output_dir: /rainbow/liuxm/learn/train-lab/outputs/grpo/qwen3-0.6b-openr1-from-sft
+dataset_path: /rainbow/liuxm/learn/train-lab/data/processed/grpo/gsm8k_500.jsonl
+output_dir: /rainbow/liuxm/learn/train-lab/outputs/grpo/qwen3-0.6b-gsm8k-from-openr1-sft
 
-# 每 step 的题数 = 卡数（G=8、accum=8 时）。2 卡: 每 step 2 题，500 step ≈ 2 epoch
+# 每 step 的题数 = 卡数（G=6、accum=6 时）。2 卡: 每 step 2 题，500 step ≈ 2 epoch
 max_steps: 500
 per_device_train_batch_size: 1
 # generation_batch_size = batch * 卡数 * accum，必须整除 num_generations
-# 2 卡: 1*2*8=16，16%8=0，合法；4 卡: 1*4*8=32，同样合法
-gradient_accumulation_steps: 8
+# 2 卡: 1*2*6=12，12%6=0，合法；4 卡: 1*4*6=24，同样合法
+gradient_accumulation_steps: 6
 learning_rate: 0.000002
 warmup_steps: 20
 logging_steps: 5
 save_steps: 100
 
 max_completion_length: 4096
-num_generations: 8
+num_generations: 6
 # 同一批生成复用 2 次更新，不额外采样
 num_iterations: 2
 temperature: 1.0
