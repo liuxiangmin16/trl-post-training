@@ -36,7 +36,7 @@ GRPO 只按最终数字打分，不奖励推理长度或过程，所以不会把
 
 ## 优化方向
 
-1. **把推理长度加入奖励。** 现在 GRPO 只有 `format_reward`（有没有 `<answer>`）和 `correctness_reward`（数字对不对）。短而错、短而对都会给予奖励。可以加一项长度奖励（例如 completion token 数落在基座量级、或相对组内均值），让模型不要把 `<think>` 压成两三行。要注意设上限，避免为刷分而注水。
+1. **把推理长度加入奖励。** 现在 GRPO 只有 `format_reward`（有没有 `<answer>`）和 `correctness_reward`（数字对不对）。短而错、短而对都会给予奖励。可以加一项长度奖励（例如 completion token 数落在基座量级、或相对组内均值），让模型不要把 `<think>` 压成两三行。要注意设上限，避免为刷分而注水。(实验结果表明，这个优化方向没有效果，长度加入奖励不足以扭转数据集的短板)
 2. **换更详细的推理过程数据，尝试 OpenR1-Math。** SFT 目前模仿 GSM8K 金标短解。OpenR1-Math（如 [open-r1/OpenR1-Math-220k](https://huggingface.co/datasets/open-r1/OpenR1-Math-220k)）带长 CoT，更接近 Qwen3 原来的写法。用它做 SFT（或只 SFT 长推理、格式用少量标签样本），再 GRPO，比在短解上继续 RL 更对症。
 
 
